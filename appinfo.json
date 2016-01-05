@@ -1,7 +1,7 @@
 {
     "appKeys": {},
     "capabilities": [
-        ""
+        "configurable"
     ],
     "companyName": "amcolash@gmail.com",
     "longName": "PebbleIoT",
