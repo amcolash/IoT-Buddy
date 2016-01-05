@@ -25,7 +25,7 @@
       <div class="item-container-content">
         <label class="item">
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" name="input-1" placeholder="Key">
+            <input type="text" class="item-input" name="key" placeholder="Key">
           </div>
         </label>
       </div>
@@ -36,12 +36,12 @@
       <div class="item-container-content">
         <label class="item">
           <div class="item-input-wrapper item-input-wrapper-button">
-            <input type="text" class="item-input" name="input-2" placeholder="Trigger Name">
+            <input type="text" class="item-input" name="trigger-name" placeholder="Trigger Name">
           </div>
           <div class="item-input-wrapper item-input-wrapper-button" style="margin-top">
-            <input type="text" class="item-input" name="input-2" placeholder="Trigger Event">
+            <input type="text" class="item-input" name="trigger-event" placeholder="Trigger Event">
           </div>
-          <input type="button" class="item-button item-input-button" value="Add">
+          <input type="button" id="add" class="item-button item-input-button" value="Add">
         </label>
       </div>
     </div>
@@ -50,9 +50,7 @@
       <div class="item-container-header">draggable Items</div>
       <div class="item-container-content">
         <div class="item-draggable-list">
-          <label class="item">Example Item 1</label>
-          <label class="item">Example Item 2</label>
-          <label class="item">Example Item 3</label>
+          <span class="empty">Trigger List Empty</span>
         </ul>
       </div>
     </div>

@@ -2,6 +2,13 @@
   right: 36px;
 }
 
+.empty {
+  position: relative;
+  padding: 10px;
+  display: block;
+  overflow: hidden;
+}
+
 .close {
   position: absolute;
   right: 0px;
