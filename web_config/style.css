@@ -1,0 +1,12 @@
+.item-draggable-handle {
+  right: 36px;
+}
+
+.close {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+  height: 28px;
+  width: 28px;
+  margin-top: 3px;
+}

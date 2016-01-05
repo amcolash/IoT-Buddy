@@ -2,10 +2,11 @@
   <head>
     <title>PebbleIoT</title>
     <link rel="stylesheet" href="bower_components/Slate/dist/css/slate.min.css">
+    <link rel="stylesheet" href="style.css">
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/Slate/dist/js/slate.min.js"></script>
-    <!-- <script src="js/app.js"></script> -->
+    <script src="app.js"></script>
   </head>
 
   <body>
@@ -24,11 +25,38 @@
       <div class="item-container-content">
         <label class="item">
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" name="input-1" placeholder="Input field">
+            <input type="text" class="item-input" name="input-1" placeholder="Key">
           </div>
         </label>
       </div>
     </div>
+
+    <div class="item-container">
+      <div class="item-container-header">Trigger</div>
+      <div class="item-container-content">
+        <label class="item">
+          <div class="item-input-wrapper item-input-wrapper-button">
+            <input type="text" class="item-input" name="input-2" placeholder="Trigger Name">
+          </div>
+          <div class="item-input-wrapper item-input-wrapper-button" style="margin-top">
+            <input type="text" class="item-input" name="input-2" placeholder="Trigger Event">
+          </div>
+          <input type="button" class="item-button item-input-button" value="Add">
+        </label>
+      </div>
+    </div>
+
+    <div class="item-container">
+      <div class="item-container-header">draggable Items</div>
+      <div class="item-container-content">
+        <div class="item-draggable-list">
+          <label class="item">Example Item 1</label>
+          <label class="item">Example Item 2</label>
+          <label class="item">Example Item 3</label>
+        </ul>
+      </div>
+    </div>
+  </div>
 
     <div class="item-container">
       <div class="button-container">
