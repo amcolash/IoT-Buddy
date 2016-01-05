@@ -1,0 +1,22 @@
+{
+  "name": "web_config",
+  "homepage": "https://github.com/amcolash/PebbleIoT",
+  "authors": [
+    "Andrew McOlash <amcolash@gmail.com>"
+  ],
+  "description": "A pebble watch app to send commands to the Maker channel of IFTTT",
+  "main": "app.js",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Slate": "pebble-slate#~0.0.3",
+    "jquery": "~2.1.4"
+  }
+}
