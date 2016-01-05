@@ -14,21 +14,10 @@ Settings.config(
   },
   function(e) {
     console.log('closed configurable');
+    console.log(JSON.stringify(e));
   }
 );
 
-var triggers1 = [
-  {
-    title: 'Toggle Lights',
-    trigger: 'toggle_lights'
-  },
-  {
-    title: 'Toggle Lamp',
-    trigger: 'toggle_lamp'
-  }
-];
-
-Settings.option('triggers', triggers1);
 var triggers = Settings.option('triggers');
 // Create the Menu, supplying the list of fruits
 
