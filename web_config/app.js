@@ -39,7 +39,7 @@ function save() {
 
   if ($('.item-draggable-list label').length > 0) {
     $('.item-draggable-list label').each(function() {
-      options.key.push({
+      options.triggers.push({
         'trigger_name': $(this).data('trigger_name'),
         'trigger_event': $(this).data('trigger_event')
       });
