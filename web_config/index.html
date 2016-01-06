@@ -29,32 +29,50 @@
           </div>
         </label>
       </div>
-    </div>
-
-    <div class="item-container">
-      <div class="item-container-header">Trigger</div>
-      <div class="item-container-content">
-        <label class="item">
-          <div class="item-input-wrapper item-input-wrapper-button">
-            <input type="text" class="item-input" name="trigger-name" placeholder="Trigger Name">
-          </div>
-          <div class="item-input-wrapper item-input-wrapper-button" style="margin-top">
-            <input type="text" class="item-input" name="trigger-event" placeholder="Trigger Event">
-          </div>
-          <input type="button" id="add" class="item-button item-input-button" value="Add">
-        </label>
+      <div class="item-container-footer">
+        This is your IFTTT Maker Channel key, this key is only stored on your local device.
       </div>
     </div>
 
     <div class="item-container">
-      <div class="item-container-header">draggable Items</div>
+      <div class="item-container-header">New Trigger</div>
+      <div class="item-container-content">
+        <label class="item">
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" name="trigger-name" placeholder="Trigger Name">
+          </div>
+        </label>
+      </div>
+      <div class="item-container-footer">
+        The name that you would like to see for this toggle on your watch.
+      </div>
+
+      <div class="item-container-content">
+        <label class="item">
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" name="trigger-event" placeholder="Trigger Event">
+          </div>
+        </label>
+      </div>
+      <div class="item-container-footer">
+        The trigger name for your IFTTT Maker channel rule.
+      </div>
+    </div>
+
+    <div class="item-container">
+      <div class="button-container">
+        <input id="add" type="button" class="item-button" value="ADD TRIGGER">
+      </div>
+    </div>
+
+    <div class="item-container">
+      <div class="item-container-header">Current Triggers</div>
       <div class="item-container-content">
         <div class="item-draggable-list">
           <span class="empty">Trigger List Empty</span>
-        </ul>
+        </div>
       </div>
     </div>
-  </div>
 
     <div class="item-container">
       <div class="button-container">

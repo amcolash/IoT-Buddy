@@ -35,7 +35,8 @@ function add(trigger_name, trigger_event) {
 }
 
 function save() {
-  options = {'triggers': [], 'key': $('input[name="key"]').val()};
+  var key = $('input[name="key"]').val();
+  options = {'triggers': [], 'key': key};
 
   if ($('.item-draggable-list label').length > 0) {
     $('.item-draggable-list label').each(function() {
@@ -57,12 +58,17 @@ $(document).ready(function() {
 
   console.log(options);
 
-  if (options !== null && 'triggers' in options) {
-    $(options.triggers).each(function() {
-      if ('trigger_name' in this && 'trigger_event' in this) {
-        add(this.trigger_name, this.trigger_event);
-      }
-    });
+  if (options !== null) {
+    if ('triggers' in options) {
+      $(options.triggers).each(function() {
+        if ('trigger_name' in this && 'trigger_event' in this) {
+          add(this.trigger_name, this.trigger_event);
+        }
+      });
+    }
+    if ('key' in options) {
+      $('input[name="key"]').val(options.key);
+    }
   }
 
   $('#save').click(function() {
