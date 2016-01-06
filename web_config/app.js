@@ -54,9 +54,10 @@ function save() {
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
-  options = JSON.parse(decodeURIComponent(document.location.search.substring(1)));
-
-  console.log(options);
+  if (document.location.search !== '') {
+    options = JSON.parse(decodeURIComponent(document.location.search.substring(1)));
+    console.log(options);
+  }
 
   if (options !== null) {
     if ('triggers' in options) {
