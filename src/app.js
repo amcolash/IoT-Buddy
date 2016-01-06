@@ -8,7 +8,8 @@ var key = 'QW9btRcieq0Z83x0Z7tRQ';
 
 // Set a configurable with the open callback
 Settings.config(
-  { url: 'http://pi.amcolash.com/pebbleiot/index.html' },
+  { url: 'http://pi.amcolash.com/pebbleiot/index.html?' +
+   encodeURIComponent(JSON.stringify(Settings.option())), autoSave: true },
   function(e) {
     console.log('opening configurable');
   },
