@@ -1,11 +1,7 @@
-var triggers = [{title: 'Toggle Lights', trigger: 'toggle_lights'}];
-var options = {triggers};
-//document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+function removeHandler() {
+  $('.remove').unbind('click');
 
-function closeHandler() {
-  $('.close').unbind('click');
-
-  $('.close').click(function() {
+  $('.remove').click(function() {
     $(this).parent().remove();
 
     if ($('.item-draggable-list label').length === 0) {
@@ -16,30 +12,58 @@ function closeHandler() {
   });
 }
 
+function add() {
+  var trigger_name = $('input[name="trigger-name"]').val();
+  var trigger_event = $('input[name="trigger-event"]').val();
+
+  $('input[name="trigger-name"]').val('');
+  $('input[name="trigger-event"]').val('');
+
+  if (trigger_name === '' || trigger_event === '') {
+    alert('Need a name and event!');
+    return;
+  }
+
+  var item = $(
+    '<label class="item">' + trigger_name + ' - ' + trigger_event +
+      '<span class="remove">X</span>' +
+      '<div class="item-draggable-handle">' +
+        '<div class="item-draggable-handle-bar"></div>' +
+        '<div class="item-draggable-handle-bar"></div>' +
+        '<div class="item-draggable-handle-bar"></div>' +
+      '</div>' +
+    '</label>'
+  ).appendTo('.item-draggable-list');
+
+  item.data('trigger_name', trigger_name);
+  item.data('trigger_event', trigger_event);
+
+  $('.empty').remove();
+
+  removeHandler();
+}
+
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
-  $('#add').click(function() {
-    var trigger_name = $('input[name="trigger-name"]').val();
-    var trigger_event = $('input[name="trigger-event"]').val();
+  $('#save').click(function() {
+    var options = [];
 
-    if (trigger_name === '' || trigger_event === '') {
-      alert('Need a name and event!');
-      return;
+    if ($('.item-draggable-list label').length > 0) {
+      $('.item-draggable-list label').each(function() {
+        options.push({
+          'trigger_name': $(this).data('trigger_name'),
+          'trigger_event': $(this).data('trigger_event')
+        });
+      });
     }
 
-    $('.item-draggable-list').append(
-      '<label class="item">' + trigger_name + ' - ' + trigger_event +
-        '<span class="close">X</span>' +
-        '<div class="item-draggable-handle">' +
-          '<div class="item-draggable-handle-bar"></div>' +
-          '<div class="item-draggable-handle-bar"></div>' +
-          '<div class="item-draggable-handle-bar"></div>' +
-        '</div>' +
-      '</label>'
-    );
-    $('.empty').remove();
-
-    closeHandler();
+    console.log(options);
+    document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
   });
+
+  $('#add').click(function() {
+    add();
+  });
+
 });
