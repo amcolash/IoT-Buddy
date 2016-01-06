@@ -1,3 +1,5 @@
+var options = [];
+
 function removeHandler() {
   $('.remove').unbind('click');
 
@@ -46,8 +48,11 @@ function add() {
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
+  var uri = document.location.search;
+  alert(decodeURI(uri));
+
   $('#save').click(function() {
-    var options = [];
+    options = null;
 
     if ($('.item-draggable-list label').length > 0) {
       $('.item-draggable-list label').each(function() {
