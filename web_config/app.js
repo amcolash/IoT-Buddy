@@ -1,6 +1,6 @@
 var options = [];
 
-function removeHandler() {
+function remove() {
   $('.remove').unbind('click');
 
   $('.remove').click(function() {
@@ -14,18 +14,7 @@ function removeHandler() {
   });
 }
 
-function add() {
-  var trigger_name = $('input[name="trigger-name"]').val();
-  var trigger_event = $('input[name="trigger-event"]').val();
-
-  $('input[name="trigger-name"]').val('');
-  $('input[name="trigger-event"]').val('');
-
-  if (trigger_name === '' || trigger_event === '') {
-    alert('Need a name and event!');
-    return;
-  }
-
+function add(trigger_name, trigger_event) {
   var item = $(
     '<label class="item">' + trigger_name + ' - ' + trigger_event +
       '<span class="remove">X</span>' +
@@ -42,33 +31,57 @@ function add() {
 
   $('.empty').remove();
 
-  removeHandler();
+  remove();
+}
+
+function save() {
+  options = {'triggers': [], 'key': $('input[name="key"]').val()};
+
+  if ($('.item-draggable-list label').length > 0) {
+    $('.item-draggable-list label').each(function() {
+      options.key.push({
+        'trigger_name': $(this).data('trigger_name'),
+        'trigger_event': $(this).data('trigger_event')
+      });
+    });
+  }
+
+  console.log(options);
+  document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
 }
 
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
-  var uri = document.location.search;
-  alert(decodeURI(uri));
+  options = JSON.parse(decodeURIComponent(document.location.search.substring(1)));
+
+  console.log(options);
+
+  if (options !== null && 'triggers' in options) {
+    $(options.triggers).each(function() {
+      if ('trigger_name' in this && 'trigger_event' in this) {
+        add(this.trigger_name, this.trigger_event);
+      }
+    });
+  }
 
   $('#save').click(function() {
-    options = null;
-
-    if ($('.item-draggable-list label').length > 0) {
-      $('.item-draggable-list label').each(function() {
-        options.push({
-          'trigger_name': $(this).data('trigger_name'),
-          'trigger_event': $(this).data('trigger_event')
-        });
-      });
-    }
-
-    console.log(options);
-    document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+    save();
   });
 
   $('#add').click(function() {
-    add();
+    var trigger_name = $('input[name="trigger-name"]').val();
+    var trigger_event = $('input[name="trigger-event"]').val();
+
+    if (trigger_name === '' || trigger_event === '') {
+      alert('Need a name and event!');
+      return;
+    }
+
+    $('input[name="trigger-name"]').val('');
+    $('input[name="trigger-event"]').val('');
+
+    add(trigger_name, trigger_event);
   });
 
 });
