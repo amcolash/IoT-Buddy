@@ -49,15 +49,31 @@ function save() {
 
   console.log(options);
   document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+
+
+  // Set the return URL depending on the runtime environment
+  var return_to = getQueryParam('return_to', 'pebblejs://close#');
+  document.location = return_to + encodeURIComponent(JSON.stringify(some_settings));
+}
+
+// Get query variables
+function getQueryParam(variable, defaultValue) {
+  // Find all URL parameters
+  var query = location.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+
+    // If the query variable parameter is found, decode it to use and return it for use
+    if (pair[0] === variable) {
+      return decodeURIComponent(pair[1]);
+    }
+  }
+  return defaultValue || false;
 }
 
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
-
-  if (document.location.search !== '') {
-    options = JSON.parse(decodeURIComponent(document.location.search.substring(1)));
-    console.log(options);
-  }
 
   if (options !== null) {
     if ('triggers' in options) {
@@ -67,6 +83,7 @@ $(document).ready(function() {
         }
       });
     }
+
     if ('key' in options) {
       $('input[name="key"]').val(options.key);
     }
