@@ -1,4 +1,4 @@
-var options = [];
+var options = {};
 
 function remove() {
   $('.remove').unbind('click');
@@ -47,13 +47,18 @@ function save() {
     });
   }
 
-  console.log(options);
-  document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
-
-
   // Set the return URL depending on the runtime environment
   var return_to = getQueryParam('return_to', 'pebblejs://close#');
-  document.location = return_to + encodeURIComponent(JSON.stringify(some_settings));
+  document.location = return_to + encodeURIComponent(JSON.stringify(options));
+}
+
+function reset() {
+  var r = confirm("Are you sure?");
+  if (r == true) {
+    options = {'triggers': [], 'key': ''};
+    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+    document.location = return_to + encodeURIComponent(JSON.stringify(options));
+  }
 }
 
 // Get query variables
@@ -61,6 +66,7 @@ function getQueryParam(variable, defaultValue) {
   // Find all URL parameters
   var query = location.search.substring(1);
   var vars = query.split('&');
+
   for (var i = 0; i < vars.length; i++) {
     var pair = vars[i].split('=');
 
@@ -75,19 +81,31 @@ function getQueryParam(variable, defaultValue) {
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
-  if (options !== null) {
-    if ('triggers' in options) {
-      $(options.triggers).each(function() {
-        if ('trigger_name' in this && 'trigger_event' in this) {
-          add(this.trigger_name, this.trigger_event);
-        }
-      });
-    }
-
-    if ('key' in options) {
-      $('input[name="key"]').val(options.key);
-    }
+  var temp;
+  if (location.hash !== '') {
+    temp = location.hash.substring(1);
+  } else {
+    temp = location.search.substring(1);
   }
+  temp = decodeURIComponent(temp);
+
+  options = JSON.parse(temp);
+
+  if (options.triggers !== undefined) {
+    $(options.triggers).each(function() {
+      if ('trigger_name' in this && 'trigger_event' in this) {
+        add(this.trigger_name, this.trigger_event);
+      }
+    });
+  }
+
+  if (options.key !== false) {
+    $('input[name="key"]').val(options.key);
+  }
+
+  $('#reset').click(function() {
+    reset();
+  });
 
   $('#save').click(function() {
     save();
