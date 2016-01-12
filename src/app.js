@@ -7,6 +7,7 @@ var keyPrefix = '/with/key/';
 var key;
 
 var triggerMenu;
+var card;
 
 // Set a configurable with the open callback
 Settings.config(
@@ -26,6 +27,14 @@ Settings.config(
 refreshMenu();
 
 function refreshMenu() {
+  // Remove old menus
+  if (triggerMenu !== null && triggerMenu !== undefined) {
+    triggerMenu.hide();
+  }
+  if (card !== null && card !== undefined) {
+    card.hide();
+  }
+  
   var triggers = Settings.option('triggers');
   key = Settings.option('key');
   var menuItems = [];
@@ -37,11 +46,6 @@ function refreshMenu() {
   }
   
   if (menuItems.length > 0 && key !== '') {
-    // Possibly remove old menu and make a new one
-    if (triggerMenu !== null && triggerMenu !== undefined) {
-      triggerMenu.hide();
-    }
-    
     triggerMenu = new UI.Menu({
       sections: [{
         title: 'Trigger List',
@@ -60,7 +64,7 @@ function refreshMenu() {
       });
     });
   } else {
-    var card = new UI.Card({
+    card = new UI.Card({
       title: 'Set up app',
       body: 'You need to set up IoT Buddy from your phone.'
     });
