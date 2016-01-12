@@ -4,7 +4,7 @@
         "configurable"
     ],
     "companyName": "amcolash@gmail.com",
-    "longName": "PebbleIoT",
+    "longName": "IoT Buddy",
     "projectType": "pebblejs",
     "resources": {
         "media": [
@@ -32,7 +32,7 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "PebbleIoT",
+    "shortName": "IoT Buddy",
     "targetPlatforms": [
         "aplite",
         "basalt"
