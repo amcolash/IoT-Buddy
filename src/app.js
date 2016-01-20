@@ -1,6 +1,7 @@
 var UI = require('ui');
 var ajax = require('ajax');
 var Settings = require('settings');
+var Vibe = require('ui/vibe');
 
 var serverUrl = 'https://maker.ifttt.com/trigger/';
 var keyPrefix = '/with/key/';
@@ -24,8 +25,10 @@ Settings.config(
   }
 );
 
-refreshMenu();
-
+Pebble.addEventListener("ready", function() {
+  refreshMenu();
+});
+                        
 function refreshMenu() {
   // Remove old menus
   if (triggerMenu !== null && triggerMenu !== undefined) {
@@ -58,6 +61,7 @@ function refreshMenu() {
     
     // Add a click listener for select button click
     triggerMenu.on('select', function(event) {
+      Vibe.vibrate('short');
       ajax({
         url: serverUrl + menuItems[event.itemIndex].subtitle + keyPrefix + key,
         method: 'put'
