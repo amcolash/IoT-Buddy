@@ -47,7 +47,7 @@ function save() {
     'key': key,
     'textColor': textColor,
     'backgroundColor': backgroundColor,
-    'hightlightTextColor': hightlightTextColor,
+    'highlightTextColor': highlightTextColor,
     'highlightBackgroundColor': highlightBackgroundColor
   };
 
@@ -102,7 +102,9 @@ $(document).ready(function() {
   }
   temp = decodeURIComponent(temp);
 
-  options = JSON.parse(temp);
+  if (temp !== '') {
+    options = JSON.parse(temp);
+  }
 
   if (options.triggers !== undefined) {
     $(options.triggers).each(function() {
