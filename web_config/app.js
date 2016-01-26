@@ -39,11 +39,12 @@ function save() {
 
   var textColor = $('input[name="textColor"]').val();
   var backgroundColor = $('input[name="backgroundColor"]').val();
-  var hightlightTextColor = $('input[name="hightlightTextColor"]').val();
+  var highlightTextColor = $('input[name="highlightTextColor"]').val();
   var highlightBackgroundColor = $('input[name="highlightBackgroundColor"]').val();
+
   options = {
     'triggers': [],
-    'key': key, '',
+    'key': key,
     'textColor': textColor,
     'backgroundColor': backgroundColor,
     'hightlightTextColor': hightlightTextColor,
