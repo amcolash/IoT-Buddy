@@ -30,12 +30,14 @@ Settings.config(
 
 // Seems to work better for iOS?
 if (!started) {
+  started = true;
   refreshMenu();
 }
 
 // Both shouldn't fire
 Pebble.addEventListener('ready', function(e) {
   if (!started) {
+    started = true;
     refreshMenu();
   }
 });
@@ -111,12 +113,4 @@ function refreshMenu() {
     
     card.show();
   }
-}
-
-function rgb2hex(rgb) {
-  rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  return ("#" +
-          ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-          ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-          ("0" + parseInt(rgb[3],10).toString(16)).slice(-2)).toUpperCase();
 }
