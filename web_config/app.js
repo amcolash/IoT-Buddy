@@ -36,7 +36,19 @@ function add(trigger_name, trigger_event) {
 
 function save() {
   var key = $('input[name="key"]').val();
-  options = {'triggers': [], 'key': key};
+
+  var textColor = $('input[name="textColor"]').val();
+  var backgroundColor = $('input[name="backgroundColor"]').val();
+  var hightlightTextColor = $('input[name="hightlightTextColor"]').val();
+  var highlightBackgroundColor = $('input[name="highlightBackgroundColor"]').val();
+  options = {
+    'triggers': [],
+    'key': key, '',
+    'textColor': textColor,
+    'backgroundColor': backgroundColor,
+    'hightlightTextColor': hightlightTextColor,
+    'highlightBackgroundColor': highlightBackgroundColor
+  };
 
   if ($('.item-draggable-list label').length > 0) {
     $('.item-draggable-list label').each(function() {
