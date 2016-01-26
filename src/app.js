@@ -15,7 +15,7 @@ var color = true;
 
 // Set a configurable with the open callback
 Settings.config(
-  { url: 'http://pi.amcolash.com/pebbleiot/index.html?'  +
+  { url: 'http://pi.amcolash.com/IoTBuddy/index.html?'  +
    encodeURIComponent(JSON.stringify(Settings.option())), autoSave: true },
   function(e) {
     console.log('opening configurable');
@@ -31,7 +31,6 @@ Settings.config(
 // Seems to work better for iOS?
 if (!started) {
   refreshMenu();
-  color = Pebble.getActiveWatchInfo().platform !== 'aplite';
 }
 
 // Both shouldn't fire
@@ -42,6 +41,8 @@ Pebble.addEventListener('ready', function(e) {
 });
                         
 function refreshMenu() {
+  color = Pebble.getActiveWatchInfo().platform !== 'aplite';
+  
   // Remove old menus
   if (triggerMenu !== null && triggerMenu !== undefined) {
     triggerMenu.hide();
@@ -61,24 +62,32 @@ function refreshMenu() {
   }
   
   if (menuItems.length > 0 && key !== '') {
+    
+    var backgroundColor = color ? Settings.option('backgroundColor') : 'white';
+    var highlightBackgroundColor = color ? Settings.option('highlightBackgroundColor') : 'black';
+    var textColor = color ? Settings.option('textColor') : 'black';
+    var highlightTextColor = color ? Settings.option('highlightTextColor') : 'white';
+    
+    if (backgroundColor !== undefined) backgroundColor = backgroundColor.replace('0x', '#');
+    if (highlightBackgroundColor !== undefined) highlightBackgroundColor = highlightBackgroundColor.replace('0x', '#');
+    if (textColor !== undefined) textColor = textColor.replace('0x', '#');
+    if (highlightTextColor !== undefined) highlightTextColor = highlightTextColor.replace('0x', '#');
+    
+    console.log(backgroundColor);
+    console.log(highlightBackgroundColor);
+    console.log(textColor);
+    console.log(highlightTextColor);
+    
     triggerMenu = new UI.Menu({
       sections: [{
         title: 'Trigger List',
         items: menuItems
       }],
+      backgroundColor: backgroundColor,
+      highlightBackgroundColor: highlightBackgroundColor,
+      textColor: textColor,
+      highlightTextColor: highlightTextColor,
     });
-    
-    if (color) {
-      var backgroundColor = Settings.option('backgroundColor');
-      var highlightBackgroundColor = Settings.option('highlightBackgroundColor');
-      var textColor = Settings.option('textColor');
-      var highlightTextColor = Settings.option('highlightTextColor');
-      
-      triggerMenu.backgroundColor = backgroundColor || 'white';
-      triggerMenu.highlightBackgroundColor = highlightBackgroundColor || 'black';
-      triggerMenu.textColor = textColor || 'black';
-      triggerMenu.highlightTextColor = highlightTextColor || 'white';
-    }
     
     // Show the Menu
     console.log('Showing main menu');
@@ -102,4 +111,12 @@ function refreshMenu() {
     
     card.show();
   }
+}
+
+function rgb2hex(rgb) {
+  rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  return ("#" +
+          ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+          ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+          ("0" + parseInt(rgb[3],10).toString(16)).slice(-2)).toUpperCase();
 }
