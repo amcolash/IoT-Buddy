@@ -6,6 +6,10 @@
   padding-top: 7px;
 }
 
+.item-styled-color .value {
+  top: 7px;
+}
+
 .empty {
   position: relative;
   padding: 10px;

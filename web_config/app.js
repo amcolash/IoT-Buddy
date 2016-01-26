@@ -103,6 +103,22 @@ $(document).ready(function() {
     $('input[name="key"]').val(options.key);
   }
 
+  if (options.textColor !== false) {
+    $('input[name="textColor"]').val(options.textColor);
+  }
+
+  if (options.backgroundColor !== false) {
+    $('input[name="backgroundColor"]').val(options.backgroundColor);
+  }
+
+  if (options.hightlightTextColor !== false) {
+    $('input[name="hightlightTextColor"]').val(options.hightlightTextColor);
+  }
+
+  if (options.highlightBackgroundColor !== false) {
+    $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor);
+  }
+
   $('#reset').click(function() {
     reset();
   });
