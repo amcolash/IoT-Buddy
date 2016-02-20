@@ -13,6 +13,9 @@ var card;
 var started = false;
 var color = true;
 
+var timer; // timer object to clear ui changes (settings / activations)
+var timeout = 10; // timeout before closing app, unit is minutes
+
 // Set a configurable with the open callback
 Settings.config(
   { url: 'http://pi.amcolash.com/IoTBuddy/index.html?'  +
@@ -44,6 +47,7 @@ Pebble.addEventListener('ready', function(e) {
                         
 function refreshMenu() {
   color = Pebble.getActiveWatchInfo().platform !== 'aplite';
+  clearTimeout(timer);
   
   // Remove old menus
   if (triggerMenu !== null && triggerMenu !== undefined) {
@@ -98,11 +102,16 @@ function refreshMenu() {
     // Add a click listener for select button click
     triggerMenu.on('select', function(event) {
       Vibe.vibrate('short');
+      clearTimeout(timer);
       ajax({
         url: serverUrl + menuItems[event.itemIndex].subtitle + keyPrefix + key,
         method: 'put'
       });
     });
+    
+    timer = setTimeout(function() {
+      triggerMenu.hide();
+    }, timeout * 60000);
   } else {
     console.log('Setup Required');
     
@@ -112,5 +121,9 @@ function refreshMenu() {
     });
     
     card.show();
+    
+    timer = setTimeout(function() {
+      card.hide();
+    }, timeout * 60000);
   }
 }
