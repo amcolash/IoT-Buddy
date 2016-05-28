@@ -35,11 +35,12 @@
     "shortName": "IoT Buddy",
     "targetPlatforms": [
         "aplite",
-        "basalt"
+        "basalt",
+        "chalk"
     ],
     "uuid": "147ac606-b908-41e6-995e-0cfa6a95eca3",
     "versionCode": 1,
-    "versionLabel": "1.4",
+    "versionLabel": "1.8",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false

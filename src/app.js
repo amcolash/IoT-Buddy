@@ -18,7 +18,7 @@ var timeout = 10; // timeout before closing app, unit is minutes
 
 // Set a configurable with the open callback
 Settings.config(
-  { url: 'http://pi.amcolash.com/IoTBuddy/index.html?'  +
+  { url: 'http://amcolash.github.io/IoT-Buddy/index.html?'  +
    encodeURIComponent(JSON.stringify(Settings.option())), autoSave: true },
   function(e) {
     console.log('opening configurable');
@@ -47,7 +47,13 @@ Pebble.addEventListener('ready', function(e) {
                         
 function refreshMenu() {
   color = Pebble.getActiveWatchInfo().platform !== 'aplite';
+  
+  // Reset timeout and set a new one
   clearTimeout(timer);
+  
+  timer = setTimeout(function() {
+    triggerMenu.hide();
+  }, timeout * 60000);
   
   // Remove old menus
   if (triggerMenu !== null && triggerMenu !== undefined) {
@@ -102,16 +108,17 @@ function refreshMenu() {
     // Add a click listener for select button click
     triggerMenu.on('select', function(event) {
       Vibe.vibrate('short');
+      
+      // Clear timer and set a new one
       clearTimeout(timer);
+      timer = setTimeout(function() {
+        triggerMenu.hide();
+      }, timeout * 60000);
       ajax({
         url: serverUrl + menuItems[event.itemIndex].subtitle + keyPrefix + key,
         method: 'put'
       });
     });
-    
-    timer = setTimeout(function() {
-      triggerMenu.hide();
-    }, timeout * 60000);
   } else {
     console.log('Setup Required');
     
