@@ -99,6 +99,11 @@ function refreshMenu() {
       highlightBackgroundColor: highlightBackgroundColor,
       textColor: textColor,
       highlightTextColor: highlightTextColor,
+      status: {
+        color: textColor,
+        backgroundColor: backgroundColor,
+        separator: 'none',
+      }
     });
     
     // Show the Menu
