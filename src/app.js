@@ -66,10 +66,12 @@ function refreshMenu() {
   var triggers = Settings.option('triggers');
   key = Settings.option('key');
   var menuItems = [];
+  console.log(triggers);
   if (triggers !== null && triggers instanceof Array) {
     // Parse options and turn it into a list of menu items
     for (var i = 0; i < triggers.length; i++) {
-      menuItems.push({'title': triggers[i].trigger_name, 'subtitle': triggers[i].trigger_event});
+      menuItems.push({'title': triggers[i].trigger_name, 'subtitle': triggers[i].trigger_event,
+                      'value': triggers[i].trigger_value});
     }
   }
   
@@ -102,7 +104,7 @@ function refreshMenu() {
       status: {
         color: textColor,
         backgroundColor: backgroundColor,
-        separator: 'none',
+//         separator: 'none',
       }
     });
     
@@ -121,7 +123,11 @@ function refreshMenu() {
       }, timeout * 60000);
       ajax({
         url: serverUrl + menuItems[event.itemIndex].subtitle + keyPrefix + key,
-        method: 'put'
+        method: 'put',
+        type: 'json',
+        data: {"value1": menuItems[event.itemIndex].value},
+      }, function(data) {
+          console.log(data);
       });
     });
   } else {
