@@ -14,9 +14,13 @@ function remove() {
   });
 }
 
-function add(trigger_name, trigger_event) {
+function add(trigger_name, trigger_event, trigger_value) {
+  var value = '';
+  if (trigger_value !== '' && trigger_value !== undefined) {
+    value = ' (' + trigger_value + ')';
+  }
   var item = $(
-    '<label class="item">' + trigger_name + ' - ' + trigger_event +
+    '<label class="item">' + trigger_name + ' - ' + trigger_event + value +
       '<span class="remove">X</span>' +
       '<div class="item-draggable-handle">' +
         '<div class="item-draggable-handle-bar"></div>' +
@@ -28,6 +32,11 @@ function add(trigger_name, trigger_event) {
 
   item.data('trigger_name', trigger_name);
   item.data('trigger_event', trigger_event);
+
+  if (trigger_value === undefined || trigger_value === null) {
+    trigger_value = '';
+  }
+  item.data('trigger_value', trigger_value);
 
   $('.empty').remove();
 
@@ -55,7 +64,8 @@ function save() {
     $('.item-draggable-list label').each(function() {
       options.triggers.push({
         'trigger_name': $(this).data('trigger_name'),
-        'trigger_event': $(this).data('trigger_event')
+        'trigger_event': $(this).data('trigger_event'),
+        'trigger_value': $(this).data('trigger_value')
       });
     });
   }
@@ -108,8 +118,8 @@ $(document).ready(function() {
 
   if (options.triggers !== undefined) {
     $(options.triggers).each(function() {
-      if ('trigger_name' in this && 'trigger_event' in this) {
-        add(this.trigger_name, this.trigger_event);
+      if ('trigger_name' in this && 'trigger_event' in this && 'trigger_value' in this) {
+        add(this.trigger_name, this.trigger_event, this.trigger_value);
       }
     });
   }
@@ -145,6 +155,7 @@ $(document).ready(function() {
   $('#add').click(function() {
     var trigger_name = $('input[name="trigger-name"]').val();
     var trigger_event = $('input[name="trigger-event"]').val();
+    var trigger_value = $('input[name="trigger-value"]').val();
 
     if (trigger_name === '' || trigger_event === '') {
       alert('Need a name and event!');
@@ -153,8 +164,9 @@ $(document).ready(function() {
 
     $('input[name="trigger-name"]').val('');
     $('input[name="trigger-event"]').val('');
+    $('input[name="trigger-value"]').val('');
 
-    add(trigger_name, trigger_event);
+    add(trigger_name, trigger_event, trigger_value);
   });
 
 });
