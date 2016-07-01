@@ -1,0 +1,24 @@
+{
+    "author": "amcolash@gmail.com",
+    "dependencies": {},
+    "keywords": [],
+    "name": "iot-buddy-c",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "IoT-Buddy(C)",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": []
+        },
+        "sdkVersion": "3",
+        "uuid": "15776a5c-0f5a-44b9-a717-38ad5fe8ca65",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
