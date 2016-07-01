@@ -1,21 +1,35 @@
 {
     "author": "amcolash@gmail.com",
-    "dependencies": {},
+    "dependencies": {
+        "pebble-clay": "^1.0.1"
+    },
     "keywords": [],
     "name": "iot-buddy-c",
     "pebble": {
         "capabilities": [
-            ""
+            "location",
+            "configurable",
+            "health"
         ],
         "displayName": "IoT-Buddy(C)",
         "enableMultiJS": true,
-        "messageKeys": [],
+        "messageKeys": [
+            "BackgroundColor",
+            "ForegroundColor",
+            "SecondTick",
+            "Animations"
+        ],
         "projectType": "native",
         "resources": {
             "media": []
         },
         "sdkVersion": "3",
-        "uuid": "15776a5c-0f5a-44b9-a717-38ad5fe8ca65",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk"
+        ],
+        "uuid": "983fdf52-fa6f-4f41-b72d-9fbbf0ec1915",
         "watchapp": {
             "watchface": false
         }
