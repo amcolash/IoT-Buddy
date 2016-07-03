@@ -20,13 +20,15 @@ module.exports =
         "type": "color",
         "messageKey": "BackgroundColor",
         "defaultValue": "0x000000",
-        "label": "Background Color"
+        "label": "Background Color",
+        "sunlight": false
       },
       {
         "type": "color",
         "messageKey": "ForegroundColor",
         "defaultValue": "0xFFFFFF",
-        "label": "Foreground Color"
+        "label": "Foreground Color",
+        "sunlight": false
       }
     ]
   },

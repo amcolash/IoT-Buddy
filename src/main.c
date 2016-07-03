@@ -3,6 +3,9 @@
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 
+static GColor menu_bg;
+static GColor menu_fg;
+
 uint16_t num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *callback_context) {
   return 3;
 }
@@ -44,6 +47,32 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
 
   //Do the vibration pattern!
   vibes_enqueue_custom_pattern(pattern);
+  
+  // Declare the dictionary's iterator
+  DictionaryIterator *out_iter;
+  
+  // Prepare the outbox buffer for this message
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if(result == APP_MSG_OK) {
+    // A dummy value
+    int value = 0;
+  
+    // Add an item to ask for weather data
+    dict_write_int(out_iter, MESSAGE_KEY_RequestData, &value, sizeof(int), true);
+  } else {
+    // The outbox cannot be used right now
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
+  }
+  
+  // Send this message
+  result = app_message_outbox_send();
+  
+  // Check the result
+  if(result != APP_MSG_OK) {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
+  }
+  
+  
 }
 
 static void main_window_load(Window *window) {
@@ -74,6 +103,7 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
   Tuple *bg_color_t = dict_find(iter, MESSAGE_KEY_BackgroundColor);
   if(bg_color_t) {
     GColor bg_color = GColorFromHEX(bg_color_t->value->int32);
+//     s_menu_layer
   }
 
   Tuple *fg_color_t = dict_find(iter, MESSAGE_KEY_ForegroundColor);
