@@ -19,6 +19,8 @@ var xhrRequest = function (url, type, json, callback) {
 Pebble.addEventListener('ready', function() {
   // PebbleKit JS is ready!
   console.log('PebbleKit JS ready!');
+
+  // console.log(clay.getSettings());
 });
 
 // Get AppMessage events
@@ -31,10 +33,10 @@ Pebble.addEventListener('appmessage', function(e) {
     // The RequestData key is present, read the value
     var value = dict.RequestData;
     console.log(value);
-    
+
     var trigger = "test";
     var val = "test";
-    
+
     xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : val},
       function(responseText) {
         console.log(responseText);

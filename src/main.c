@@ -24,7 +24,7 @@ void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, 
       break;
   }
 }
-  
+
 void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context) {
   //Get which row
   int which = cell_index->row;
@@ -55,8 +55,8 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
   AppMessageResult result = app_message_outbox_begin(&out_iter);
   if(result == APP_MSG_OK) {
     // A dummy value
-    int value = 0;
-  
+    int value = which;
+
     // Add an item to ask for weather data
     dict_write_int(out_iter, MESSAGE_KEY_RequestData, &value, sizeof(int), true);
   } else {
@@ -100,6 +100,7 @@ static void main_window_unload(Window *window) {
 }
 
 static void inbox_received_handler(DictionaryIterator *iter, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "got message!");
   Tuple *bg_color_t = dict_find(iter, MESSAGE_KEY_BackgroundColor);
   if(bg_color_t) {
     GColor bg_color = GColorFromHEX(bg_color_t->value->int32);
