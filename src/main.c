@@ -47,10 +47,10 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
 
   //Do the vibration pattern!
   vibes_enqueue_custom_pattern(pattern);
-  
+
   // Declare the dictionary's iterator
   DictionaryIterator *out_iter;
-  
+
   // Prepare the outbox buffer for this message
   AppMessageResult result = app_message_outbox_begin(&out_iter);
   if(result == APP_MSG_OK) {
@@ -63,16 +63,14 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
     // The outbox cannot be used right now
     APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
   }
-  
+
   // Send this message
   result = app_message_outbox_send();
-  
+
   // Check the result
   if(result != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
   }
-  
-  
 }
 
 static void main_window_load(Window *window) {
