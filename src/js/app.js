@@ -11,14 +11,16 @@ var xhrRequest = function (url, type, json, callback) {
   xhr.onload = function () {
     callback(this.responseText);
   };
-  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.open(type, url);
+  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   xhr.send(JSON.stringify(json));
 };
 
 Pebble.addEventListener('ready', function() {
   // PebbleKit JS is ready!
   console.log('PebbleKit JS ready!');
+  
+  console.log(JSON.stringify(clay.getSettings()));
 });
 
 // Get AppMessage events
@@ -27,6 +29,7 @@ Pebble.addEventListener('appmessage', function(e) {
   var dict = e.payload;
 
   console.log('Got message: ' + JSON.stringify(dict));
+  
   if (typeof dict.RequestData !== 'undefined') {
     // The RequestData key is present, read the value
     var value = dict.RequestData;

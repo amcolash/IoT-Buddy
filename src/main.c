@@ -55,7 +55,7 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
   AppMessageResult result = app_message_outbox_begin(&out_iter);
   if(result == APP_MSG_OK) {
     // A dummy value
-    int value = 0;
+    int value = which;
   
     // Add an item to ask for weather data
     dict_write_int(out_iter, MESSAGE_KEY_RequestData, &value, sizeof(int), true);
