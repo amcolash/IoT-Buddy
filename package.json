@@ -18,7 +18,9 @@
             "ForegroundColor",
             "SecondTick",
             "Animations",
-            "RequestData"
+            "TriggerName",
+            "TriggerTrigger",
+            "TriggerValue"
         ],
         "projectType": "native",
         "resources": {
@@ -30,7 +32,7 @@
             "basalt",
             "chalk"
         ],
-        "uuid": "b2d17c48-4126-4af1-b7c0-fe6c1d554945",
+        "uuid": "73bb40f3-c31b-4f8b-a9dc-15b6a0ea3a87",
         "watchapp": {
             "watchface": false
         }
