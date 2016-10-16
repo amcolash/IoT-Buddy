@@ -129,8 +129,8 @@ $(document).ready(function() {
   }
 
   $('input[name="textColor"]').val(options.textColor || '#000000');
-  $('input[name="backgroundColor"]').val(options.backgroundColor || '#ffffff');
-  $('input[name="hightlightTextColor"]').val(options.hightlightTextColor || '#ffffff');
+  $('input[name="backgroundColor"]').val(options.backgroundColor || '#FFFFFF');
+  $('input[name="hightlightTextColor"]').val(options.hightlightTextColor || '#FFFFFF');
   $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor || '#000000');
 
   $('#reset').click(function() {
