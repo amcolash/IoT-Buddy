@@ -128,10 +128,10 @@ $(document).ready(function() {
     $('input[name="key"]').val(options.key);
   }
 
-  $('input[name="textColor"]').val(options.textColor || '#000000');
-  $('input[name="backgroundColor"]').val(options.backgroundColor || '#FFFFFF');
-  $('input[name="hightlightTextColor"]').val(options.hightlightTextColor || '#FFFFFF');
-  $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor || '#000000');
+  $('input[name="textColor"]').val(options.textColor || '0x000000');
+  $('input[name="backgroundColor"]').val(options.backgroundColor || '0xFFFFFF');
+  $('input[name="hightlightTextColor"]').val(options.hightlightTextColor || '0xFFFFF');
+  $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor || '0x000000');
 
   $('#reset').click(function() {
     reset();
