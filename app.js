@@ -128,10 +128,18 @@ $(document).ready(function() {
     $('input[name="key"]').val(options.key);
   }
 
-  $('input[name="textColor"]').val(options.textColor || '0x000000');
-  $('input[name="backgroundColor"]').val(options.backgroundColor || '0xFFFFFF');
-  $('input[name="hightlightTextColor"]').val(options.hightlightTextColor || '0xFFFFF');
-  $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor || '0x000000');
+  if (options.textColor) {
+    $('input[name="textColor"]').val(options.textColor);
+  }
+  if (options.backgroundColor) {
+    $('input[name="backgroundColor"]').val(options.backgroundColor);
+  }
+  if (options.highlightTextColor) {
+    $('input[name="highlightTextColor"]').val(options.highlightTextColor);
+  }
+  if (options.highlightBackgroundColor) {
+    $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor);
+  }
 
   $('#reset').click(function() {
     reset();
