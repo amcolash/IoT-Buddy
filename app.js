@@ -54,10 +54,10 @@ function save() {
   options = {
     'triggers': [],
     'key': key,
-    'textColor': textColor,
-    'backgroundColor': backgroundColor,
-    'highlightTextColor': highlightTextColor,
-    'highlightBackgroundColor': highlightBackgroundColor
+    'textColor': parseInt(textColor, 16),
+    'backgroundColor': parseInt(backgroundColor, 16),
+    'highlightTextColor': parseInt(highlightTextColor, 16),
+    'highlightBackgroundColor': parseInt(highlightBackgroundColor, 16)
   };
 
   if ($('.item-draggable-list label').length > 0) {
