@@ -1,8 +1,6 @@
 {
     "author": "amcolash@gmail.com",
-    "dependencies": {
-        "pebble-clay": "^1.0.1"
-    },
+    "dependencies": {},
     "keywords": [],
     "name": "iot-buddy-c",
     "pebble": {
@@ -16,11 +14,14 @@
         "messageKeys": [
             "BackgroundColor",
             "ForegroundColor",
-            "SecondTick",
-            "Animations",
+            "BackgroundTextColor",
+            "ForegroundTextColor",
+            "Key",
+            "Triggers",
             "TriggerName",
             "TriggerTrigger",
-            "TriggerValue"
+            "TriggerValue",
+            "Colors"
         ],
         "projectType": "native",
         "resources": {
