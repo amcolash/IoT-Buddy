@@ -1,4 +1,4 @@
-var options = {};
+var options = {'triggers': [], 'key': ''};
 
 function remove() {
   $('.remove').unbind('click');
@@ -70,7 +70,7 @@ function save() {
     });
   }
 
-  localStorage.setItem('options', options);
+  localStorage.setItem('options', JSON.stringify(options));
 
   // Set the return URL depending on the runtime environment
   var return_to = getQueryParam('return_to', 'pebblejs://close#');
@@ -81,6 +81,9 @@ function reset() {
   var r = confirm("Are you sure?");
   if (r == true) {
     options = {'triggers': [], 'key': ''};
+
+    localStorage.setItem('options', JSON.stringify(options));
+
     var return_to = getQueryParam('return_to', 'pebblejs://close#');
     document.location = return_to + encodeURIComponent(JSON.stringify(options));
   }
@@ -116,33 +119,42 @@ $(document).ready(function() {
 
   if (temp !== '') {
     options = JSON.parse(temp);
-  } else {
-    options = localStorage.getItem('options');
+  } else if (localStorage.getItem('options') !== null) {
+    try {
+      options = JSON.parse(localStorage.getItem('options'));
+    } catch (e) {
+      console.log("error parsing old settings");
+    }
   }
 
-  if (options.triggers !== undefined) {
-    $(options.triggers).each(function() {
-      if ('trigger_name' in this && 'trigger_event' in this && 'trigger_value' in this) {
-        add(this.trigger_name, this.trigger_event, this.trigger_value);
-      }
-    });
-  }
+  if (options !== undefined) {
+    if (options.triggers !== undefined) {
+      $(options.triggers).each(function() {
+        if ('trigger_name' in this && 'trigger_event' in this && 'trigger_value' in this) {
+          add(this.trigger_name, this.trigger_event, this.trigger_value);
+        }
+      });
+    }
 
-  if (options.key !== false) {
-    $('input[name="key"]').val(options.key);
-  }
+    if (options.key !== false) {
+      $('input[name="key"]').val(options.key);
+    }
 
-  if (options.textColor) {
-    $('input[name="textColor"]').val(options.textColor);
-  }
-  if (options.backgroundColor) {
-    $('input[name="backgroundColor"]').val(options.backgroundColor);
-  }
-  if (options.highlightTextColor) {
-    $('input[name="highlightTextColor"]').val(options.highlightTextColor);
-  }
-  if (options.highlightBackgroundColor) {
-    $('input[name="highlightBackgroundColor"]').val(options.highlightBackgroundColor);
+    if (options.textColor) {
+      $('input[name="textColor"]').val('0x' + decimalToHex(options.textColor, 6));
+    }
+
+    if (options.backgroundColor) {
+      $('input[name="backgroundColor"]').val('0x' + decimalToHex(options.backgroundColor, 6));
+    }
+
+    if (options.highlightTextColor) {
+      $('input[name="highlightTextColor"]').val('0x' + decimalToHex(options.highlightTextColor, 6));
+    }
+
+    if (options.highlightBackgroundColor) {
+      $('input[name="highlightBackgroundColor"]').val('0x' + decimalToHex(options.highlightBackgroundColor, 6));
+    }
   }
 
   $('#reset').click(function() {
@@ -171,3 +183,14 @@ $(document).ready(function() {
   });
 
 });
+
+function decimalToHex(d, padding) {
+    var hex = Number(d).toString(16);
+    padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
+
+    while (hex.length < padding) {
+        hex = "0" + hex;
+    }
+
+    return hex;
+}
