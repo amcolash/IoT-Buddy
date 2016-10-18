@@ -1,25 +1,9 @@
-// var Settings = require('settings');
+var MessageQueue = require('./js-message-queue');
 
 var serverUrl = 'https://maker.ifttt.com/trigger/';
 var keyPrefix = '/with/key/';
 
-// // Set a configurable with the open callback
-// Settings.config(
-//   { url: 'http://amcolash.github.io/IoT-Buddy/index.html?'  +
-//    encodeURIComponent(JSON.stringify(Settings.option())), autoSave: true },
-//   function(e) {
-//     console.log('opening configurable');
-//     console.log(JSON.stringify(Settings.option()));
-//   },
-//   function(e) {
-//     console.log('closed configurable');
-//     console.log(JSON.stringify(e));
-// //     refreshMenu();
-//   }
-// );
-
 Pebble.addEventListener('showConfiguration', function() {
-  console.log("OPEN!");
   var url = 'http://amcolash.github.io/IoT-Buddy/index.html?';
   Pebble.openURL(url);
 });
@@ -39,14 +23,29 @@ Pebble.addEventListener('webviewclosed', function(e) {
   };
   
   // Send to the watchapp
-  Pebble.sendAppMessage(dict, function() {
-    console.log('Config data sent successfully!');
-  }, function(e) {
-    console.log('Error sending config data!');
-  });
+  send_message(dict);
+  
+  for (var i = 0; i < configData.triggers.length; i++) {
+    var trigger_dict = {
+      'TriggerName': configData.triggers[i].trigger_name,
+      'TriggerEvent': configData.triggers[i].trigger_event,
+      'TriggerValue': configData.triggers[i].trigger_value,
+      'TriggerIndex': i
+    };
+    
+    send_message(trigger_dict);
+  }
   
 });
 
+// TODO: Fix this, get a working message queue
+function send_message(dictionary) {
+  MessageQueue.sendAppMessage(dictionary, function() {
+    console.log('Config data sent successfully!');
+  }, function(e) {
+    console.log('Error sending config data!\n' + JSON.stringify(dictionary));
+  });
+}
 
 var xhrRequest = function (url, type, json, callback) {
   var xhr = new XMLHttpRequest();
@@ -72,23 +71,27 @@ Pebble.addEventListener('appmessage', function(e) {
 //   console.log('Got message: ' + JSON.stringify(dict));
   
   if (typeof dict.TriggerName !== 'undefined' &&
-    typeof dict.TriggerTrigger !== 'undefined' &&
+    typeof dict.TriggerEvent !== 'undefined' &&
     typeof dict.TriggerValue !== 'undefined') {
     
     // The RequestData key is present, read the value
-    var name = dict.TriggerName;
-    var trigger = dict.TriggerTrigger;
+//     var name = dict.TriggerName;
+    var trigger = dict.TriggerEvent;
     var value = dict.TriggerValue;
     var key = dict.Key;
     
-    console.log("TriggerName: ", name);
-    console.log("TriggerTrigger: " + trigger);
-    console.log("TriggerValue: " + value);
+//     console.log("TriggerName: ", name);
+//     console.log("TriggerTrigger: " + trigger);
+//     console.log("TriggerValue: " + value);
 
     xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
       function(responseText) {
         console.log(responseText);
       }
     );
+  }
+  
+  if (typeof dict.Settings !== 'undefined') {
+    console.log(JSON.stringify(dict.Settings));
   }
 });

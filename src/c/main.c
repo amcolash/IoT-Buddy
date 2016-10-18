@@ -1,7 +1,7 @@
 #include <pebble.h>
 
+#define STRING_LENGTH 30
 #define NUM_ITEMS 3
-#define STRING_LENGTH 50
 
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
@@ -11,12 +11,12 @@ typedef struct {
   GColor menu_fg;
   GColor selected_bg;
   GColor selected_fg;
-} Colors;
+  char key[STRING_LENGTH];
+} Settings;
 
-static char key[STRING_LENGTH];
-static Colors colors;
+static Settings settings;
 
-// For now just allocating 50 length strings /shrug
+// For now just allocating 30 length strings /shrug
 struct trigger {
   char name[STRING_LENGTH];
   char trigger[STRING_LENGTH];
@@ -57,9 +57,9 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
   if(result == APP_MSG_OK) {
     // Add trigger name and value to the message
     dict_write_cstring(out_iter, MESSAGE_KEY_TriggerName, triggers[which].name);
-    dict_write_cstring(out_iter, MESSAGE_KEY_TriggerTrigger, triggers[which].trigger);
+    dict_write_cstring(out_iter, MESSAGE_KEY_TriggerEvent, triggers[which].trigger);
     dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValue, triggers[which].value);
-    dict_write_cstring(out_iter, MESSAGE_KEY_Key, key);
+    dict_write_cstring(out_iter, MESSAGE_KEY_Key, settings.key);
   } else {
     // The outbox cannot be used right now
     APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
@@ -75,8 +75,8 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
 }
 
 static void refresh_menu() {
-  menu_layer_set_normal_colors(s_menu_layer, colors.menu_bg, colors.menu_fg);
-  menu_layer_set_highlight_colors(s_menu_layer, colors.selected_bg, colors.selected_fg);
+  menu_layer_set_normal_colors(s_menu_layer, settings.menu_bg, settings.menu_fg);
+  menu_layer_set_highlight_colors(s_menu_layer, settings.selected_bg, settings.selected_fg);
 }
 
 static void main_window_load(Window *window) {
@@ -95,13 +95,13 @@ static void main_window_load(Window *window) {
   menu_layer_set_callbacks(s_menu_layer, NULL, callbacks);
   
   // Init colors to default, loaded from storage later
-  colors.menu_bg = GColorWhite;
-  colors.menu_fg = GColorBlack;
-  colors.selected_bg = GColorBlack;
-  colors.selected_fg = GColorWhite;
+  settings.menu_bg = GColorWhite;
+  settings.menu_fg = GColorBlack;
+  settings.selected_bg = GColorBlack;
+  settings.selected_fg = GColorWhite;
   
-  if (persist_exists(MESSAGE_KEY_Colors)) {
-    persist_read_data(MESSAGE_KEY_Colors, &colors, sizeof(Colors));
+  if (persist_exists(MESSAGE_KEY_Settings)) {
+    persist_read_data(MESSAGE_KEY_Settings, &settings, sizeof(Settings));
   }
   
   refresh_menu();
@@ -121,31 +121,42 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
   // Read color preferences
   Tuple *bg_color_t = dict_find(iter, MESSAGE_KEY_BackgroundColor);
   if(bg_color_t) {
-    colors.menu_bg = GColorFromHEX(bg_color_t->value->int32); 
+    settings.menu_bg = GColorFromHEX(bg_color_t->value->int32); 
   }
 
   Tuple *fg_color_t = dict_find(iter, MESSAGE_KEY_ForegroundColor);
   if(fg_color_t) {
-    colors.menu_fg = GColorFromHEX(fg_color_t->value->int32); 
+    settings.menu_fg = GColorFromHEX(fg_color_t->value->int32); 
   }
   
   Tuple *bg_text_color_t = dict_find(iter, MESSAGE_KEY_BackgroundTextColor);
   if(bg_text_color_t) {
-    colors.selected_bg = GColorFromHEX(bg_text_color_t->value->int32); 
+    settings.selected_bg = GColorFromHEX(bg_text_color_t->value->int32); 
   }
 
   Tuple *fg_text_color_t = dict_find(iter, MESSAGE_KEY_ForegroundTextColor);
   if(fg_text_color_t) {
-    colors.selected_fg = GColorFromHEX(fg_text_color_t->value->int32);
+    settings.selected_fg = GColorFromHEX(fg_text_color_t->value->int32);
   }
   
   Tuple *key_t = dict_find(iter, MESSAGE_KEY_Key);
   if(key_t) {
-    strcpy(key, key_t->value->cstring);
+    strcpy(settings.key, key_t->value->cstring);
+  }
+  
+  Tuple *trigger_name_t = dict_find(iter, MESSAGE_KEY_TriggerName);
+  Tuple *trigger_event_t = dict_find(iter, MESSAGE_KEY_TriggerEvent);
+  Tuple *trigger_value_t = dict_find(iter, MESSAGE_KEY_TriggerValue);
+  Tuple *trigger_index_t = dict_find(iter, MESSAGE_KEY_TriggerIndex);
+  if (trigger_name_t && trigger_event_t && trigger_index_t) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "Trigger name: %s", trigger_name_t->value->cstring);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Trigger event: %s", trigger_event_t->value->cstring);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Trigger value: %s", trigger_value_t->value->cstring);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Trigger index: %d", (int) trigger_index_t->value->int32);
   }
   
   
-  persist_write_data(MESSAGE_KEY_Colors, &colors, sizeof(Colors));
+  persist_write_data(MESSAGE_KEY_Settings, &settings, sizeof(Settings));
   
   refresh_menu();
 }

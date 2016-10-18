@@ -17,11 +17,11 @@
             "BackgroundTextColor",
             "ForegroundTextColor",
             "Key",
-            "Triggers",
             "TriggerName",
-            "TriggerTrigger",
+            "TriggerEvent",
             "TriggerValue",
-            "Colors"
+            "TriggerIndex",
+            "Settings"
         ],
         "projectType": "native",
         "resources": {
