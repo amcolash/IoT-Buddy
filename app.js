@@ -70,6 +70,7 @@ function save() {
     });
   }
 
+  localStorage.clear();
   localStorage.setItem('options', JSON.stringify(options));
 
   // Set the return URL depending on the runtime environment
@@ -82,7 +83,7 @@ function reset() {
   if (r == true) {
     options = {'triggers': [], 'key': ''};
 
-    localStorage.setItem('options', JSON.stringify(options));
+    localStorage.clear();
 
     var return_to = getQueryParam('return_to', 'pebblejs://close#');
     document.location = return_to + encodeURIComponent(JSON.stringify(options));
