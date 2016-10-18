@@ -70,6 +70,8 @@ function save() {
     });
   }
 
+  localStorage.setItem('options', options);
+
   // Set the return URL depending on the runtime environment
   var return_to = getQueryParam('return_to', 'pebblejs://close#');
   document.location = return_to + encodeURIComponent(JSON.stringify(options));
@@ -114,6 +116,8 @@ $(document).ready(function() {
 
   if (temp !== '') {
     options = JSON.parse(temp);
+  } else {
+    options = localStorage.getItem('options');
   }
 
   if (options.triggers !== undefined) {
