@@ -17,11 +17,16 @@
             "BackgroundTextColor",
             "ForegroundTextColor",
             "Key",
+            "Settings",
             "TriggerName",
             "TriggerEvent",
             "TriggerValue",
             "TriggerIndex",
-            "Settings"
+            "TriggerListLength",
+            "Triggers1",
+            "Triggers2",
+            "Triggers3",
+            "Triggers4"
         ],
         "projectType": "native",
         "resources": {
@@ -31,12 +36,14 @@
         "targetPlatforms": [
             "aplite",
             "basalt",
-            "chalk"
+            "chalk",
+            "diorite",
+            "emery"
         ],
         "uuid": "73bb40f3-c31b-4f8b-a9dc-15b6a0ea3a87",
         "watchapp": {
             "watchface": false
         }
     },
-    "version": "1.0.0"
+    "version": "2.0.0"
 }

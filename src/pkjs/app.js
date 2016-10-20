@@ -3,6 +3,27 @@ var MessageQueue = require('./js-message-queue');
 var serverUrl = 'https://maker.ifttt.com/trigger/';
 var keyPrefix = '/with/key/';
 
+
+var send_message = function (dictionary) {
+  MessageQueue.sendAppMessage(dictionary, function() {
+//     console.log('Config data sent successfully!');
+  }, function(e) {
+    console.log('Error sending config data!\n' + JSON.stringify(dictionary));
+  });
+};
+
+var xhrRequest = function (url, type, json, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    callback(this.responseText);
+  };
+  
+  xhr.open(type, url);
+  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhr.send(JSON.stringify(json));
+};
+
+
 Pebble.addEventListener('showConfiguration', function() {
   var url = 'http://amcolash.github.io/IoT-Buddy/index.html?';
   Pebble.openURL(url);
@@ -20,6 +41,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
     'BackgroundTextColor': configData.highlightBackgroundColor,
     'ForegroundTextColor': configData.highlightTextColor,
     'Key': configData.key,
+    'TriggerListLength': configData.triggers.length
   };
   
   // Send to the watchapp
@@ -38,26 +60,6 @@ Pebble.addEventListener('webviewclosed', function(e) {
   
 });
 
-// TODO: Fix this, get a working message queue
-function send_message(dictionary) {
-  MessageQueue.sendAppMessage(dictionary, function() {
-    console.log('Config data sent successfully!');
-  }, function(e) {
-    console.log('Error sending config data!\n' + JSON.stringify(dictionary));
-  });
-}
-
-var xhrRequest = function (url, type, json, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    callback(this.responseText);
-  };
-  
-  xhr.open(type, url);
-  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  xhr.send(JSON.stringify(json));
-};
-
 Pebble.addEventListener('ready', function() {
   // PebbleKit JS is ready!
   console.log('PebbleKit JS ready!');
@@ -68,22 +70,16 @@ Pebble.addEventListener('appmessage', function(e) {
   // Get the dictionary from the message
   var dict = e.payload;
 
-//   console.log('Got message: ' + JSON.stringify(dict));
+  console.log('Got message: ' + JSON.stringify(dict));
   
-  if (typeof dict.TriggerName !== 'undefined' &&
-    typeof dict.TriggerEvent !== 'undefined' &&
-    typeof dict.TriggerValue !== 'undefined') {
+  if (typeof dict.Key !== 'undefined' &&
+    typeof dict.TriggerEvent !== 'undefined') {
     
     // The RequestData key is present, read the value
-//     var name = dict.TriggerName;
     var trigger = dict.TriggerEvent;
-    var value = dict.TriggerValue;
+    var value = dict.TriggerValue || "";
     var key = dict.Key;
     
-//     console.log("TriggerName: ", name);
-//     console.log("TriggerTrigger: " + trigger);
-//     console.log("TriggerValue: " + value);
-
     xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
       function(responseText) {
         console.log(responseText);
