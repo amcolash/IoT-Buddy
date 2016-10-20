@@ -2,14 +2,12 @@
     "author": "amcolash@gmail.com",
     "dependencies": {},
     "keywords": [],
-    "name": "iot-buddy-c",
+    "name": "iot-buddy",
     "pebble": {
         "capabilities": [
-            "location",
-            "configurable",
-            "health"
+            "configurable"
         ],
-        "displayName": "IoT-Buddy(C)",
+        "displayName": "IoT-Buddy",
         "enableMultiJS": true,
         "messageKeys": [
             "BackgroundColor",
@@ -40,7 +38,7 @@
             "diorite",
             "emery"
         ],
-        "uuid": "73bb40f3-c31b-4f8b-a9dc-15b6a0ea3a87",
+        "uuid": "147ac606-b908-41e6-995e-0cfa6a95eca3",
         "watchapp": {
             "watchface": false
         }
