@@ -61,12 +61,16 @@ function save() {
   };
 
   if ($('.item-draggable-list label').length > 0) {
+    var i = 0;
     $('.item-draggable-list label').each(function() {
-      options.triggers.push({
-        'trigger_name': $(this).data('trigger_name'),
-        'trigger_event': $(this).data('trigger_event'),
-        'trigger_value': $(this).data('trigger_value')
-      });
+      if (i < 16) {
+        options.triggers.push({
+          'trigger_name': $(this).data('trigger_name'),
+          'trigger_event': $(this).data('trigger_event'),
+          'trigger_value': $(this).data('trigger_value')
+        });
+        i++;
+      }
     });
   }
 
