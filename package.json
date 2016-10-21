@@ -1,24 +1,30 @@
 {
     "author": "amcolash@gmail.com",
-    "dependencies": {
-        "pebble-clay": "^1.0.1"
-    },
+    "dependencies": {},
     "keywords": [],
-    "name": "iot-buddy-c",
+    "name": "iot-buddy",
     "pebble": {
         "capabilities": [
-            "location",
-            "configurable",
-            "health"
+            "configurable"
         ],
-        "displayName": "IoT-Buddy(C)",
+        "displayName": "IoT-Buddy",
         "enableMultiJS": true,
         "messageKeys": [
             "BackgroundColor",
             "ForegroundColor",
-            "SecondTick",
-            "Animations",
-            "RequestData"
+            "BackgroundTextColor",
+            "ForegroundTextColor",
+            "Key",
+            "Settings",
+            "TriggerName",
+            "TriggerEvent",
+            "TriggerValue",
+            "TriggerIndex",
+            "TriggerListLength",
+            "Triggers1",
+            "Triggers2",
+            "Triggers3",
+            "Triggers4"
         ],
         "projectType": "native",
         "resources": {
@@ -28,12 +34,14 @@
         "targetPlatforms": [
             "aplite",
             "basalt",
-            "chalk"
+            "chalk",
+            "diorite",
+            "emery"
         ],
-        "uuid": "b2d17c48-4126-4af1-b7c0-fe6c1d554945",
+        "uuid": "147ac606-b908-41e6-995e-0cfa6a95eca3",
         "watchapp": {
             "watchface": false
         }
     },
-    "version": "1.0.0"
+    "version": "2.0.0"
 }
