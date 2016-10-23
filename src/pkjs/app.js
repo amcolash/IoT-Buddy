@@ -83,6 +83,9 @@ Pebble.addEventListener('appmessage', function(e) {
     xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
       function(responseText) {
         console.log(responseText);
+        
+        // Send to the watchapp
+        send_message({'TriggerSuccess' : true});
       }
     );
   }

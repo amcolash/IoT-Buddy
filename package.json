@@ -24,7 +24,8 @@
             "Triggers1",
             "Triggers2",
             "Triggers3",
-            "Triggers4"
+            "Triggers4",
+            "TriggerSuccess"
         ],
         "projectType": "native",
         "resources": {
@@ -43,5 +44,5 @@
             "watchface": false
         }
     },
-    "version": "2.0.0"
+    "version": "2.1.0"
 }
