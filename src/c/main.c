@@ -47,6 +47,13 @@ static void refresh_menu() {
   }
 }
 
+static void verticalAlignTextLayer(TextLayer *layer) {
+  GRect frame = layer_get_frame(text_layer_get_layer(layer));
+  GSize content = text_layer_get_content_size(layer);
+  layer_set_frame(text_layer_get_layer(layer),
+      GRect(frame.origin.x, frame.origin.y + (frame.size.h - content.h - 5) / 2, frame.size.w, content.h));
+}
+
 static void clear_temp() {
   for (int i = 0; i < ARRAY_SIZE; i++) {
     memset(temp[i].name, 0, STRING_LENGTH);
@@ -249,13 +256,14 @@ static void main_window_load(Window *window) {
   timer = app_timer_register(TIMEOUT * 60 * 1000, (AppTimerCallback) timer_callback, NULL);
   
   // Add a text layer that explains that the user needs to configure the app
-  s_text_layer = text_layer_create(GRect(0, 26, 144, 142));
+  s_text_layer = text_layer_create(GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT));
   text_layer_set_text(s_text_layer, "Please configure this app before you use it.");
   text_layer_set_font(s_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text_alignment(s_text_layer, GTextAlignmentCenter);
+  verticalAlignTextLayer(s_text_layer);
   
   // Create menu layer
-  s_menu_layer = menu_layer_create(GRect(0, 0, 144, 168));
+  s_menu_layer = menu_layer_create(GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT));
 
   // Let it receive clicks
   menu_layer_set_click_config_onto_window(s_menu_layer, window);
