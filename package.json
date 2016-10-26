@@ -5,7 +5,8 @@
     "name": "iot-buddy",
     "pebble": {
         "capabilities": [
-            "configurable"
+            "configurable",
+            "health"
         ],
         "displayName": "IoT-Buddy",
         "enableMultiJS": true,
@@ -24,8 +25,7 @@
             "Triggers1",
             "Triggers2",
             "Triggers3",
-            "Triggers4",
-            "TriggerSuccess"
+            "Triggers4"
         ],
         "projectType": "native",
         "resources": {

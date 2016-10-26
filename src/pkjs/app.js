@@ -6,7 +6,7 @@ var keyPrefix = '/with/key/';
 
 var send_message = function (dictionary) {
   MessageQueue.sendAppMessage(dictionary, function() {
-//     console.log('Config data sent successfully!');
+    console.log('Sent: ' + JSON.stringify(dictionary) + ', to phone');
   }, function(e) {
     console.log('Error sending config data!\n' + JSON.stringify(dictionary));
   });
@@ -82,10 +82,8 @@ Pebble.addEventListener('appmessage', function(e) {
     
     xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
       function(responseText) {
-        console.log(responseText);
-        
         // Send to the watchapp
-        send_message({'TriggerSuccess' : true});
+        console.log(responseText);
       }
     );
   }

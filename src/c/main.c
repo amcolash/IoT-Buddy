@@ -9,6 +9,13 @@ static Window* s_main_window;
 static MenuLayer* s_menu_layer = NULL;
 static TextLayer* s_text_layer = NULL;
 
+long STEPS;
+long DISTANCE;
+long CALORIES;
+long SLEEP;
+long DEEP_SLEEP;
+long HEARTRATE;
+
 AppTimer *timer;
 
 typedef struct {
@@ -34,18 +41,7 @@ Trigger *triggers = NULL;
 Trigger temp[ARRAY_SIZE];
 
 
-static void refresh_menu() {
-  if (persist_exists(MESSAGE_KEY_Settings)) {
-    if (s_menu_layer != NULL) {
-      menu_layer_set_normal_colors(s_menu_layer, settings.menu_bg, settings.menu_fg);
-      menu_layer_set_highlight_colors(s_menu_layer, settings.selected_bg, settings.selected_fg);
-  
-      menu_layer_reload_data(s_menu_layer);
-    }
-    
-    layer_set_hidden(text_layer_get_layer(s_text_layer), settings.num_items > 0);
-  }
-}
+// Helper functions
 
 static void verticalAlignTextLayer(TextLayer *layer) {
   GRect frame = layer_get_frame(text_layer_get_layer(layer));
@@ -59,6 +55,40 @@ static void clear_temp() {
     memset(temp[i].name, 0, STRING_LENGTH);
     memset(temp[i].trigger, 0, STRING_LENGTH);
     memset(temp[i].value, 0, STRING_LENGTH);
+  }
+}
+
+static long hash(const char *str) {
+  long hash = 5381;  
+  int c;
+
+  while ((c = *str++))
+    hash = ((hash << 5) + hash) + c;
+  return hash;
+}
+
+
+// Main functions
+
+static void init_constants() {
+  STEPS = hash("{steps}");
+  DISTANCE = hash("{distance}");
+  CALORIES = hash("{calories}");
+  SLEEP = hash("{sleep}");
+  DEEP_SLEEP = hash("{deepsleep}");
+  HEARTRATE = hash("{heartrate}");
+}
+
+static void refresh_menu() {
+  if (persist_exists(MESSAGE_KEY_Settings)) {
+    if (s_menu_layer != NULL) {
+      menu_layer_set_normal_colors(s_menu_layer, settings.menu_bg, settings.menu_fg);
+      menu_layer_set_highlight_colors(s_menu_layer, settings.selected_bg, settings.selected_fg);
+  
+      menu_layer_reload_data(s_menu_layer);
+    }
+    
+    layer_set_hidden(text_layer_get_layer(s_text_layer), settings.num_items > 0);
   }
 }
 
@@ -86,6 +116,50 @@ void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, 
   }
 }
 
+void process_value(DictionaryIterator* out_iter, int which) {
+  char temp[STRING_LENGTH];
+  long hash_value = hash(triggers[which].value);
+  
+  time_t start = time_start_of_today();
+  time_t end = time(NULL);
+  
+  if(HealthServiceAccessibilityMaskAvailable) {
+    // Check for health and the things
+    HealthServiceAccessibilityMask steps_mask = health_service_metric_accessible(HealthMetricStepCount, start, end);
+    HealthServiceAccessibilityMask distance_mask = health_service_metric_accessible(HealthMetricWalkedDistanceMeters, start, end);
+    HealthServiceAccessibilityMask calories_mask = health_service_metric_accessible(HealthMetricActiveKCalories, start, end);
+    HealthServiceAccessibilityMask sleep_mask = health_service_metric_accessible(HealthMetricSleepSeconds, start, end);
+    HealthServiceAccessibilityMask deepsleep_mask = health_service_metric_accessible(HealthMetricSleepRestfulSeconds, start, end);
+    HealthServiceAccessibilityMask hr_mask = health_service_metric_accessible(HealthMetricHeartRateBPM, start, end);
+    
+    if (hash_value == STEPS && steps_mask) {
+      snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricStepCount, start, end));
+    } else if (hash_value == DISTANCE && distance_mask) {
+      snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricWalkedDistanceMeters, start, end));
+    } else if (hash_value == CALORIES && calories_mask) {
+      snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricActiveKCalories, start, end));
+    } else if (hash_value == SLEEP && sleep_mask) {
+      float value = health_service_sum(HealthMetricSleepSeconds, start, end) / (float) 3600;
+      snprintf(temp, STRING_LENGTH, "%d.%02d", (int) value, (int)(value*100)%100);
+    } else if (hash_value == DEEP_SLEEP && deepsleep_mask) {
+      float value = health_service_sum(HealthMetricSleepRestfulSeconds, start, end) / (float) 3600;
+      snprintf(temp, STRING_LENGTH, "%d.%02d", (int) value, (int)(value*100)%100);
+    } else if (hash_value == HEARTRATE && hr_mask) {
+      snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricHeartRateBPM, start, end));
+    } else {
+      // Normal case for health watches
+      snprintf(temp, STRING_LENGTH, "%s", triggers[which].value);
+    }
+  } else {
+    // Normal case for non-health watches
+    snprintf(temp, STRING_LENGTH, "%s", triggers[which].value);
+  }
+  
+  APP_LOG(APP_LOG_LEVEL_INFO, "process_value: %s", temp);
+  
+  dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValue, temp);
+}
+
 void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context) {
   //Get which row
   int which = cell_index->row;
@@ -102,7 +176,7 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
       // Add trigger name and value to the message
       dict_write_cstring(out_iter, MESSAGE_KEY_TriggerEvent, triggers[which].trigger);
       if (strlen(triggers[which].value) > 0) {
-        dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValue, triggers[which].value);
+        process_value(out_iter, which);
       }
       dict_write_cstring(out_iter, MESSAGE_KEY_Key, settings.key);
     } else {
@@ -114,7 +188,9 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
     result = app_message_outbox_send();
   
     // Check the result
-    if(result != APP_MSG_OK) {
+    if(result == APP_MSG_OK) {
+      vibes_short_pulse();
+    } else {
       APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
     }
   }
@@ -156,11 +232,6 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
     if (settings.num_items == 0) {
       refresh_menu();
     }
-  }
-  
-  Tuple *trigger_success_t = dict_find(iter, MESSAGE_KEY_TriggerSuccess);
-  if (trigger_success_t) {
-    vibes_short_pulse();
   }
   
   // Write new settings to watch persistent storage
@@ -255,15 +326,19 @@ static void main_window_load(Window *window) {
   // Init timer here, that way every time we reschedule we can use the simpler method
   timer = app_timer_register(TIMEOUT * 60 * 1000, (AppTimerCallback) timer_callback, NULL);
   
+  // Get bounds for layers below
+  Layer* window_layer = window_get_root_layer(window);
+  GRect window_bounds = layer_get_unobstructed_bounds(window_layer);
+  
   // Add a text layer that explains that the user needs to configure the app
-  s_text_layer = text_layer_create(GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT));
+  s_text_layer = text_layer_create(window_bounds);
   text_layer_set_text(s_text_layer, "Please configure this app before you use it.");
   text_layer_set_font(s_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text_alignment(s_text_layer, GTextAlignmentCenter);
   verticalAlignTextLayer(s_text_layer);
   
   // Create menu layer
-  s_menu_layer = menu_layer_create(GRect(0, 0, PBL_DISPLAY_WIDTH, PBL_DISPLAY_HEIGHT));
+  s_menu_layer = menu_layer_create(window_bounds);
 
   // Let it receive clicks
   menu_layer_set_click_config_onto_window(s_menu_layer, window);
@@ -306,6 +381,9 @@ static void init() {
 
   // Show the Window on the watch, with animated=true
   window_stack_push(s_main_window, true);
+  
+  // Init constants
+  init_constants();
   
   // Initialize the inbox for sending messages to / from phone
   inbox_init();
