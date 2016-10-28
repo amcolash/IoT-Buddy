@@ -3,6 +3,11 @@ var MessageQueue = require('./js-message-queue');
 var serverUrl = 'https://maker.ifttt.com/trigger/';
 var keyPrefix = '/with/key/';
 
+var geo_options = {
+  enableHighAccuracy: true,
+  maximumAge: 3000,
+  timeout: 3000
+};
 
 var send_message = function (dictionary) {
   MessageQueue.sendAppMessage(dictionary, function() {
@@ -78,14 +83,42 @@ Pebble.addEventListener('appmessage', function(e) {
     // The RequestData key is present, read the value
     var trigger = dict.TriggerEvent;
     var value = dict.TriggerValue || "";
+    var data = dict.TriggerValueDef || "";
     var key = dict.Key;
     
-    xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
-      function(responseText) {
-        // Send to the watchapp
-        console.log(responseText);
+    if (value.indexOf("{location}") !== -1) {
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          data = '(' + pos.coords.latitude + ', ' + pos.coords.longitude + ')';
+          value = value.replace(/\{.*\}/i, data);
+          
+          console.log("sending trigger: " + trigger + ", value: " + value);
+          
+          xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
+            function(responseText) {
+              console.log(responseText);
+            }
+          );
+        },
+        function(error) {
+          console.log("error getting location: " + error);
+          data = "(error getting location)";
+        }, geo_options);
+      
+    } else {
+      if (data.length > 0) {
+        value = value.replace(/\{.*\}/i, data);
       }
-    );
+      
+      console.log("sending trigger: " + trigger + ", value: " + value);
+      
+      xhrRequest(serverUrl + trigger + keyPrefix + key, 'PUT', {"value1" : value},
+        function(responseText) {
+          // Send to the watchapp
+          console.log(responseText);
+        }
+      );
+    }
   }
   
   if (typeof dict.Settings !== 'undefined') {

@@ -1,7 +1,7 @@
 #include <pebble.h>
 
 #define STRING_LENGTH 21
-#define KEY_LENGTH 40
+#define KEY_LENGTH 50
 #define ARRAY_SIZE 4
 #define TIMEOUT 5
 
@@ -9,12 +9,12 @@ static Window* s_main_window;
 static MenuLayer* s_menu_layer = NULL;
 static TextLayer* s_text_layer = NULL;
 
-long STEPS;
-long DISTANCE;
-long CALORIES;
-long SLEEP;
-long DEEP_SLEEP;
-long HEARTRATE;
+char STEPS[] = "{steps}";
+char DISTANCE[] = "{distance}";
+char CALORIES[] = "{calories}";
+char SLEEP[] = "{sleep}";
+char DEEP_SLEEP[] = "{deepsleep}";
+char HEARTRATE[] = "{heartrate}";
 
 AppTimer *timer;
 
@@ -58,26 +58,8 @@ static void clear_temp() {
   }
 }
 
-static long hash(const char *str) {
-  long hash = 5381;  
-  int c;
-
-  while ((c = *str++))
-    hash = ((hash << 5) + hash) + c;
-  return hash;
-}
-
 
 // Main functions
-
-static void init_constants() {
-  STEPS = hash("{steps}");
-  DISTANCE = hash("{distance}");
-  CALORIES = hash("{calories}");
-  SLEEP = hash("{sleep}");
-  DEEP_SLEEP = hash("{deepsleep}");
-  HEARTRATE = hash("{heartrate}");
-}
 
 static void refresh_menu() {
   if (persist_exists(MESSAGE_KEY_Settings)) {
@@ -118,46 +100,40 @@ void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, 
 
 void process_value(DictionaryIterator* out_iter, int which) {
   char temp[STRING_LENGTH];
-  long hash_value = hash(triggers[which].value);
   
   time_t start = time_start_of_today();
   time_t end = time(NULL);
   
   if(HealthServiceAccessibilityMaskAvailable) {
-    // Check for health and the things
+    // Check for health and various features
     HealthServiceAccessibilityMask steps_mask = health_service_metric_accessible(HealthMetricStepCount, start, end);
     HealthServiceAccessibilityMask distance_mask = health_service_metric_accessible(HealthMetricWalkedDistanceMeters, start, end);
     HealthServiceAccessibilityMask calories_mask = health_service_metric_accessible(HealthMetricActiveKCalories, start, end);
     HealthServiceAccessibilityMask sleep_mask = health_service_metric_accessible(HealthMetricSleepSeconds, start, end);
     HealthServiceAccessibilityMask deepsleep_mask = health_service_metric_accessible(HealthMetricSleepRestfulSeconds, start, end);
     HealthServiceAccessibilityMask hr_mask = health_service_metric_accessible(HealthMetricHeartRateBPM, start, end);
-    
-    if (hash_value == STEPS && steps_mask) {
+
+    if (steps_mask && strstr(triggers[which].value, STEPS)) {
       snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricStepCount, start, end));
-    } else if (hash_value == DISTANCE && distance_mask) {
+    } else if (distance_mask && strstr(triggers[which].value, DISTANCE)) {
       snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricWalkedDistanceMeters, start, end));
-    } else if (hash_value == CALORIES && calories_mask) {
+    } else if (calories_mask && strstr(triggers[which].value, CALORIES)) {
       snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricActiveKCalories, start, end));
-    } else if (hash_value == SLEEP && sleep_mask) {
+    } else if (sleep_mask && strstr(triggers[which].value, SLEEP)) {
       float value = health_service_sum(HealthMetricSleepSeconds, start, end) / (float) 3600;
       snprintf(temp, STRING_LENGTH, "%d.%02d", (int) value, (int)(value*100)%100);
-    } else if (hash_value == DEEP_SLEEP && deepsleep_mask) {
+    } else if (deepsleep_mask && strstr(triggers[which].value, DEEP_SLEEP)) {
       float value = health_service_sum(HealthMetricSleepRestfulSeconds, start, end) / (float) 3600;
       snprintf(temp, STRING_LENGTH, "%d.%02d", (int) value, (int)(value*100)%100);
-    } else if (hash_value == HEARTRATE && hr_mask) {
+    } else if (hr_mask && strstr(triggers[which].value, HEARTRATE)) {
       snprintf(temp, STRING_LENGTH, "%d", (int) health_service_sum(HealthMetricHeartRateBPM, start, end));
-    } else {
-      // Normal case for health watches
-      snprintf(temp, STRING_LENGTH, "%s", triggers[which].value);
     }
-  } else {
-    // Normal case for non-health watches
-    snprintf(temp, STRING_LENGTH, "%s", triggers[which].value);
+    
+    if (strlen(temp) > 0) {
+      APP_LOG(APP_LOG_LEVEL_INFO, "process_value: %s", temp);
+      dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValueDef, temp);
+    }
   }
-  
-  APP_LOG(APP_LOG_LEVEL_INFO, "process_value: %s", temp);
-  
-  dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValue, temp);
 }
 
 void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context) {
@@ -176,6 +152,7 @@ void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *c
       // Add trigger name and value to the message
       dict_write_cstring(out_iter, MESSAGE_KEY_TriggerEvent, triggers[which].trigger);
       if (strlen(triggers[which].value) > 0) {
+        dict_write_cstring(out_iter, MESSAGE_KEY_TriggerValue, triggers[which].value);
         process_value(out_iter, which);
       }
       dict_write_cstring(out_iter, MESSAGE_KEY_Key, settings.key);
@@ -381,9 +358,6 @@ static void init() {
 
   // Show the Window on the watch, with animated=true
   window_stack_push(s_main_window, true);
-  
-  // Init constants
-  init_constants();
   
   // Initialize the inbox for sending messages to / from phone
   inbox_init();

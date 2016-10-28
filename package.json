@@ -5,6 +5,7 @@
     "name": "iot-buddy",
     "pebble": {
         "capabilities": [
+            "location",
             "configurable",
             "health"
         ],
@@ -20,6 +21,7 @@
             "TriggerName",
             "TriggerEvent",
             "TriggerValue",
+            "TriggerValueDef",
             "TriggerIndex",
             "TriggerListLength",
             "Triggers1",
@@ -44,5 +46,5 @@
             "watchface": false
         }
     },
-    "version": "2.1.0"
+    "version": "2.2.0"
 }
