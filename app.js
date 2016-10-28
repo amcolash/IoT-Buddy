@@ -187,6 +187,53 @@ $(document).ready(function() {
     add(trigger_name, trigger_event, trigger_value);
   });
 
+  $('#add-variable').click(function() {
+    $('#popup').show();
+  });
+
+  $('#close').click(function() {
+    $('#popup').hide();
+  });
+
+  // Ugly, yes, but it is the easiest way! ;)
+  var triggerValue = $('input[name="trigger-value"]');
+  var maxLength = 21;
+
+  $('#steps').click(function() {
+    triggerValue.val((triggerValue.val() + '{steps}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#distance').click(function() {
+    triggerValue.val((triggerValue.val() + '{distance}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#calories').click(function() {
+    triggerValue.val((triggerValue.val() + '{calories}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#sleep').click(function() {
+    triggerValue.val((triggerValue.val() + '{sleep}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#deepsleep').click(function() {
+    triggerValue.val((triggerValue.val() + '{deepsleep}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#heartrate').click(function() {
+    triggerValue.val((triggerValue.val() + '{heartrate}').substring(0, 21));
+    $('#popup').hide();
+  });
+
+  $('#location').click(function() {
+    triggerValue.val((triggerValue.val() + '{location}').substring(0, 21));
+    $('#popup').hide();
+  });
+
 });
 
 function decimalToHex(d, padding) {

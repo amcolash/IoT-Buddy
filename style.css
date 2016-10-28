@@ -25,3 +25,42 @@
   width: 28px;
   margin-top: 3px;
 }
+
+#add-variable {
+  position: absolute;
+  height: 32px;
+  top: 11px;
+  right: 11px;
+  padding: 0 10px;
+  background-color: #ff4700;
+  color: white;
+  border-radius: 5px;
+  border: 0;
+}
+
+#popup {
+  z-index: 9999;
+  width: 80%;
+  position: fixed;
+  top: 0;
+  margin: 10% 10% 0;
+  padding: 20px 0;
+  border: 2px solid #a8a8a8;
+  background-color: #eaeaea;
+  border-radius: 16px;
+  display: none;
+}
+
+#popup .button-container {
+  padding: 10px;
+}
+
+#popup #close {
+  position: absolute;
+  right: 18px;
+  padding: 10px 16px 6px;
+  border-radius: 14px;
+  font-weight: bold;
+  color: #a8a8a8;
+  border: 2px solid #a8a8a8;
+}

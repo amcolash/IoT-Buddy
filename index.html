@@ -32,7 +32,7 @@
       <div class="item-container-content">
         <label class="item">
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" name="key" placeholder="Key" maxlength="40">
+            <input type="text" class="item-input" name="key" placeholder="Key" maxlength="50">
           </div>
         </label>
       </div>
@@ -91,6 +91,7 @@
         <label class="item">
           <div class="item-input-wrapper">
             <input type="text" class="item-input" name="trigger-value" placeholder="(Optional: Value to send)" maxlength="21">
+            <button id="add-variable">+ Add Variable</button>
           </div>
         </label>
       </div>
@@ -123,6 +124,31 @@
     <div class="item-container">
       <div class="button-container">
         <input id="reset" type="button" class="item-button" value="RESET">
+      </div>
+    </div>
+
+    <div id="popup">
+      <span id="close">X</span>
+      <div class="button-container">
+        <input id="steps" type="button" class="item-button" value="STEPS">
+      </div>
+      <div class="button-container">
+        <input id="distance" type="button" class="item-button" value="DISTANCE WALKED">
+      </div>
+      <div class="button-container">
+        <input id="calories" type="button" class="item-button" value="CALORIES">
+      </div>
+      <div class="button-container">
+        <input id="sleep" type="button" class="item-button" value="SLEEP">
+      </div>
+      <div class="button-container">
+        <input id="deepsleep" type="button" class="item-button" value="DEEP SLEEP">
+      </div>
+      <div class="button-container">
+        <input id="heartrate" type="button" class="item-button" value="HEART RATE">
+      </div>
+      <div class="button-container">
+        <input id="location" type="button" class="item-button" value="LOCATION">
       </div>
     </div>
   </body>
