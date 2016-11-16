@@ -10,6 +10,21 @@
   top: 7px;
 }
 
+.button-2-col {
+  width: 29.35%;
+  margin: 0.5%;
+}
+
+input[type=file] {
+  width: 1px;
+  visibility: hidden;
+}
+
+hr {
+  margin: 24px;
+  border: 2px solid #ccc;
+}
+
 .empty {
   position: relative;
   padding: 10px;

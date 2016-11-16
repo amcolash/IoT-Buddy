@@ -204,12 +204,17 @@
           $item.find('.color-box-wrap').toggleClass('show');
         });
 
+        $color.on('change', function(ev) {
+          console.log("changing color for: " + $color);
+          $valueDisplay.css('background-color', $color.val().replace(/^0x/, '#'));
+        });
+
         $item.find('.color-box.selectable').on('click', function(ev) {
           ev.preventDefault();
 
           var value = $(this).data('value');
           $color.val(value);
-          $valueDisplay.css('background-color', value.replace(/^0x/, '#'));
+          $color.trigger('change');
           $item.find('.color-box-wrap').removeClass('show');
         })
 

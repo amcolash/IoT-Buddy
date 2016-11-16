@@ -43,7 +43,7 @@ function add(trigger_name, trigger_event, trigger_value) {
   remove();
 }
 
-function save() {
+function save(close_settings) {
   var key = $('input[name="key"]').val();
 
   var textColor = $('input[name="textColor"]').val();
@@ -77,9 +77,47 @@ function save() {
   localStorage.clear();
   localStorage.setItem('options', JSON.stringify(options));
 
-  // Set the return URL depending on the runtime environment
-  var return_to = getQueryParam('return_to', 'pebblejs://close#');
-  document.location = return_to + encodeURIComponent(JSON.stringify(options));
+  if (close_settings) {
+    // Set the return URL depending on the runtime environment
+    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+    document.location = return_to + encodeURIComponent(JSON.stringify(options));
+  }
+}
+
+function load() {
+  console.log(options);
+
+  if (options !== undefined) {
+    if (options.triggers !== undefined) {
+      $(options.triggers).each(function() {
+        if ('trigger_name' in this && 'trigger_event' in this && 'trigger_value' in this) {
+          add(this.trigger_name, this.trigger_event, this.trigger_value);
+        }
+      });
+    }
+
+    if (options.key !== false) {
+      $('input[name="key"]').val(options.key);
+    }
+
+    if (options.textColor) {
+      console.log("text color set to: " + decimalToHex(options.textColor, 6));
+      $('input[name="textColor"]').val('0x' + decimalToHex(options.textColor, 6));
+      console.log("actual color: " + $('input[name="textColor"]').val());
+    }
+
+    if (options.backgroundColor) {
+      $('input[name="backgroundColor"]').val('0x' + decimalToHex(options.backgroundColor, 6));
+    }
+
+    if (options.highlightTextColor) {
+      $('input[name="highlightTextColor"]').val('0x' + decimalToHex(options.highlightTextColor, 6));
+    }
+
+    if (options.highlightBackgroundColor) {
+      $('input[name="highlightBackgroundColor"]').val('0x' + decimalToHex(options.highlightBackgroundColor, 6));
+    }
+  }
 }
 
 function reset() {
@@ -111,6 +149,21 @@ function getQueryParam(variable, defaultValue) {
   return defaultValue || false;
 }
 
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
 $(document).ready(function() {
   $('.item-draggable-handle').remove();
 
@@ -132,42 +185,14 @@ $(document).ready(function() {
     }
   }
 
-  if (options !== undefined) {
-    if (options.triggers !== undefined) {
-      $(options.triggers).each(function() {
-        if ('trigger_name' in this && 'trigger_event' in this && 'trigger_value' in this) {
-          add(this.trigger_name, this.trigger_event, this.trigger_value);
-        }
-      });
-    }
-
-    if (options.key !== false) {
-      $('input[name="key"]').val(options.key);
-    }
-
-    if (options.textColor) {
-      $('input[name="textColor"]').val('0x' + decimalToHex(options.textColor, 6));
-    }
-
-    if (options.backgroundColor) {
-      $('input[name="backgroundColor"]').val('0x' + decimalToHex(options.backgroundColor, 6));
-    }
-
-    if (options.highlightTextColor) {
-      $('input[name="highlightTextColor"]').val('0x' + decimalToHex(options.highlightTextColor, 6));
-    }
-
-    if (options.highlightBackgroundColor) {
-      $('input[name="highlightBackgroundColor"]').val('0x' + decimalToHex(options.highlightBackgroundColor, 6));
-    }
-  }
+  load();
 
   $('#reset').click(function() {
     reset();
   });
 
   $('#save').click(function() {
-    save();
+    save(true);
   });
 
   $('#add').click(function() {
@@ -232,6 +257,38 @@ $(document).ready(function() {
   $('#location').click(function() {
     triggerValue.val((triggerValue.val() + '{location}').substring(0, 21));
     $('#popup').hide();
+  });
+
+  $('#import').click(function() {
+    $('#upload-file').click();
+  });
+
+  $('#upload-file').change(function(event) {
+    if (event.target.files.length == 1 && event.target.files[0].type.match('application/json')) {
+      var f = event.target.files[0];
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = function() {
+        options = JSON.parse(reader.result);
+
+        localStorage.clear();
+        localStorage.setItem('options', JSON.stringify(options));
+
+        // Set the return URL depending on the runtime environment
+        var return_to = getQueryParam('return_to', 'pebblejs://close#');
+        document.location = return_to + encodeURIComponent(JSON.stringify(options));
+      };
+
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+
+    }
+  })
+
+  $('#export').click(function() {
+    save(false);
+    download('settings.json', JSON.stringify(options, null, 2));
   });
 
 });
